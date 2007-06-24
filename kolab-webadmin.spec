@@ -9,7 +9,7 @@ Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
 License:	GPL
 Version:	2.1.0
-Release:	%mkrel 2
+Release:	%mkrel 3
 Group:		System/Servers
 URL:		http://www.kolab.org
 Source0:	kolab-webadmin-%{version}.tar.bz2
@@ -19,7 +19,7 @@ Requires(preun): rpm-helper
 Requires(pre):	rpm-helper
 Requires(postun): rpm-helper
 Requires(pre):	apache-conf >= 2.2.4
-Requires(pre):	apache-mpm-prefork >= 2.2.4
+Requires(pre):	apache-mpm >= 2.2.4
 Requires(pre):	apache-mod_php
 Requires(pre):	kolab >= 2.1.0
 Requires:	apache-conf >= 2.2.4
@@ -27,7 +27,7 @@ Requires:	apache-mod_dav >= 2.2.4
 Requires:	apache-mod_ldap >= 2.2.4
 Requires:	apache-mod_php
 Requires:	apache-mod_ssl >= 2.2.4
-Requires:	apache-mpm-prefork >= 2.2.4
+Requires:	apache-mpm >= 2.2.4
 Requires:	kolab >= 2.1.0
 Requires:	locales-de
 Requires:	locales-es
