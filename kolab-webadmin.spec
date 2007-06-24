@@ -89,7 +89,7 @@ find . -type f|xargs perl -p -i -e "s|/kolab/bin/perl|%{_bindir}/perl|g"
 perl -pi -e "s|\@kolab_version\@|%{version}|g" www/admin/kolab/versions.php.in
 
 %build
-autoconf; automake
+aclocal; autoconf; automake
 %configure2_5x \
     --with-dist=mandriva
 
