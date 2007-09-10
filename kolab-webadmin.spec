@@ -9,7 +9,7 @@ Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
 License:	GPL
 Version:	2.1.0
-Release:	%mkrel 3
+Release:	%mkrel 4
 Group:		System/Servers
 URL:		http://www.kolab.org
 Source0:	kolab-webadmin-%{version}.tar.bz2
@@ -80,7 +80,9 @@ perl -pi -e "s|\\\$basedir\.\'configs/\'\;|\'%{_sysconfdir}/kolab/webadmin/smart
 
 # hard code some paths
 find -type f | xargs perl -pi -e "s|\@kolab_php_module_prefix\@admin/include/|%{kolab_webroot}/admin/include/|g"
+find -type f | xargs perl -pi -e "s|%{kolab_webroot}/admin/include/mysmarty\.php|%{_sysconfdir}/kolab/webadmin/mysmarty\.php|g"
 find -type f | xargs perl -pi -e "s|require_once\(\'locale\.php\'\)\;|require_once\(\'%{kolab_webroot}/admin/include/locale\.php\'\)\;|g"
+find -type f | xargs perl -pi -e "s|require_once\(\'mysmarty\.php\'\)|require_once\(\'%{_sysconfdir}/kolab/webadmin/mysmarty\.php\'\)|g"
 
 # fix one /kolab bork66y thing
 find . -type f|xargs perl -p -i -e "s|/kolab/bin/perl|%{_bindir}/perl|g"
@@ -90,6 +92,7 @@ perl -pi -e "s|\@kolab_version\@|%{version}|g" www/admin/kolab/versions.php.in
 
 %build
 aclocal; autoconf; automake
+
 %configure2_5x \
     --with-dist=mandriva
 
