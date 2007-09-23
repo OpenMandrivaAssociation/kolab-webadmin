@@ -9,7 +9,7 @@ Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
 License:	GPL
 Version:	2.1.0
-Release:	%mkrel 4
+Release:	%mkrel 5
 Group:		System/Servers
 URL:		http://www.kolab.org
 Source0:	kolab-webadmin-%{version}.tar.bz2
@@ -89,6 +89,10 @@ find . -type f|xargs perl -p -i -e "s|/kolab/bin/perl|%{_bindir}/perl|g"
 
 # fix version
 perl -pi -e "s|\@kolab_version\@|%{version}|g" www/admin/kolab/versions.php.in
+
+# these won't be generated from the *.in files if they exist
+rm -f php/admin/templates/page.tpl
+rm -f php/admin/templates/versions.tpl
 
 %build
 aclocal; autoconf; automake
