@@ -42,7 +42,6 @@ Requires:	php-pear-Net_Sieve
 Requires:	php-smarty >= 2.6.3
 Requires:	php-xml >= 5.2.2
 BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 
 %description
 Web based administration interface for The Kolab Groupware Server.
