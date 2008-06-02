@@ -75,7 +75,7 @@ find -type f | xargs perl -pi -e "s|require_once\(\'mysmarty\.php\'\)\;|require_
 find -type f | xargs perl -pi -e "s|require_once\(\'\@kolab_php_module_prefix\@admin/include/mysmarty\.php\'\)\;|require_once\(\'%{_sysconfdir}/kolab/webadmin/mysmarty\.php\'\)\;|g"
 
 find -type f | xargs perl -pi -e "s|\\\$php_dir/\@kolab_php_module_prefix\@admin/|%{kolab_webroot}/admin/|g"
-perl -pi -e "s|\\\$basedir\.\'templates_c/\'\;|\'%{_localstatedir}/kolab/webadmin/templates_c/\'\;|g" php/admin/include/mysmarty.php.in
+perl -pi -e "s|\\\$basedir\.\'templates_c/\'\;|\'%{_localstatedir}/lib/kolab/webadmin/templates_c/\'\;|g" php/admin/include/mysmarty.php.in
 perl -pi -e "s|\\\$basedir\.\'configs/\'\;|\'%{_sysconfdir}/kolab/webadmin/smarty/\'\;|g" php/admin/include/mysmarty.php.in
 
 # hard code some paths
@@ -107,7 +107,7 @@ rm -rf %{buildroot}
 
 %makeinstall_std
 
-install -d %{buildroot}%{_localstatedir}/kolab/webadmin/templates_c
+install -d %{buildroot}%{_localstatedir}/lib/kolab/webadmin/templates_c
 install -d %{buildroot}%{_sysconfdir}/kolab/webadmin/smarty
 
 perl -pi -e "s|^\\\$topdir = .*|\\\$topdir = \'/kolab/admin\'\;|g" %{buildroot}%{kolab_webroot}/admin/include/config.php
@@ -147,7 +147,7 @@ rm -rf %{buildroot}
 %attr(0640,apache,apache) %config(noreplace) %{_sysconfdir}/kolab/webadmin/config.php
 %attr(0640,apache,apache) %config(noreplace) %{_sysconfdir}/kolab/webadmin/mysmarty.php
 %dir %attr(0755,root,root) %{_sysconfdir}/kolab/webadmin/smarty
-%dir %attr(0755,apache,apache) %{_localstatedir}/kolab/webadmin/templates_c
+%dir %attr(0755,apache,apache) %{_localstatedir}/lib/kolab/webadmin/templates_c
 %dir %attr(0755,root,root) %{kolab_webroot}/admin
 %dir %attr(0755,root,root) %{kolab_webroot}/admin/addressbook
 %dir %attr(0755,root,root) %{kolab_webroot}/admin/administrator
