@@ -3,7 +3,7 @@
 
 %define kolab_webroot /var/www/html/kolab
 
-#%define _requires_exceptions pear(
+#define _requires_exceptions pear(
 
 Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
