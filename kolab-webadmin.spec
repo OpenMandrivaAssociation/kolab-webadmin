@@ -1,9 +1,8 @@
 %define _enable_debug_packages %{nil}
 %define debug_package          %{nil}
-
 %define kolab_webroot /var/www/html/kolab
-
-%define _requires_exceptions pear(/usr/share/smarty/Smarty.class.php)\\|pear(session_vars.php)
+%define _requires_exceptions pear(/usr/share/php/smarty/Smarty.class.php)\\|pear(session_vars.php)
+%define _default_patch_fuzz 0
 
 Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
@@ -13,7 +12,8 @@ Release:	%mkrel 9
 Group:		System/Servers
 URL:		http://www.kolab.org
 Source0:	kolab-webadmin-%{version}.tar.bz2
-Source1:	mandriva
+Patch0:		mandriva.diff
+Patch1:		mysmarty.php.diff
 Requires(post):	rpm-helper
 Requires(preun): rpm-helper
 Requires(pre):	rpm-helper
@@ -50,8 +50,9 @@ Web based administration interface for The Kolab Groupware Server.
 %prep
 
 %setup -q
+%patch0 -p0
+%patch1 -p0
 
-cp %{SOURCE1} dist_conf/mandriva
 
 # cleanup
 for i in `find . -type d -name CVS`  `find . -type d -name .svn` `find . -type f -name .cvs\*` `find . -type f -name .#\*`; do
@@ -62,8 +63,6 @@ done
 find . -type f|xargs file|grep 'CRLF'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
 find . -type f|xargs file|grep 'text'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
 
-# fix perl_vendordir
-perl -pi -e "s|perl_vendorlib|%{perl_vendorlib}|g" dist_conf/mandriva
 
 # the main config file
 find -type f | xargs perl -pi -e "s|\@kolab_php_module_prefix\@admin/include/config\.php|%{_sysconfdir}/kolab/webadmin/config\.php|g"
@@ -119,7 +118,7 @@ mv %{buildroot}%{kolab_webroot}/admin/include/mysmarty.php %{buildroot}%{_syscon
 
 install -d %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/
 cat > %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{name}.conf <<EOF
-php_value include_path '.:%{_datadir}/pear:%{kolab_webroot}:%{_datadir}/smarty:%{_datadir}/kolab/php:%{_datadir}/kolab/php/horde'
+php_value include_path '.:%{_datadir}/pear:%{kolab_webroot}:%{_datadir}/php/smarty:%{_datadir}/kolab/php:%{_datadir}/kolab/php/horde'
 EOF
 
 # cleanup
