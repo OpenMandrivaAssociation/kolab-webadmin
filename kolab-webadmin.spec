@@ -2,7 +2,6 @@
 %define debug_package          %{nil}
 %define kolab_webroot /var/www/html/kolab
 %define _requires_exceptions pear(/usr/share/php/smarty/Smarty.class.php)\\|pear(session_vars.php)
-%define _default_patch_fuzz 0
 
 Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
