@@ -1,18 +1,19 @@
-%define _enable_debug_packages %{nil}
-%define debug_package          %{nil}
-%define kolab_webroot /var/www/html/kolab
-%define _requires_exceptions pear(/usr/share/php/smarty/Smarty.class.php)\\|pear(session_vars.php)
+%define kolab_version		2.2.3
+%define _requires_exceptions 	pear(/usr/share/php/smarty/Smarty.class.php)\\|pear(/etc/kolab/session_vars.php)
+%define kolab_webroot 		/var/www/html/kolab
+%define kolab_statedir		/var/www/html/kolab
 
 Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
 License:	GPL
-Version:	2.1.0
-Release:	%mkrel 9
+Version:	%{kolab_version}
+Release:	%mkrel 1
 Group:		System/Servers
-URL:		http://www.kolab.org
-Source0:	kolab-webadmin-%{version}.tar.bz2
+URL:		http://kolab.org/cgi-bin/viewcvs-kolab.cgi/server/kolab-webadmin/
+Source0:	%{name}-%{version}.tar.gz
+Source1:	mandriva
+Source2:	bootstrap
 Patch0:		mandriva.diff
-Patch1:		mysmarty.php.diff
 Requires(post):	rpm-helper
 Requires(preun): rpm-helper
 Requires(pre):	rpm-helper
@@ -20,14 +21,14 @@ Requires(postun): rpm-helper
 Requires(pre):	apache-conf >= 2.2.4
 Requires(pre):	apache-mpm >= 2.2.4
 Requires(pre):	apache-mod_php
-Requires(pre):	kolab >= 2.1.0
+Requires(pre):	kolab >= %{kolab_version}
 Requires:	apache-conf >= 2.2.4
 Requires:	apache-mod_dav >= 2.2.4
 Requires:	apache-mod_ldap >= 2.2.4
 Requires:	apache-mod_php
 Requires:	apache-mod_ssl >= 2.2.4
 Requires:	apache-mpm >= 2.2.4
-Requires:	kolab >= 2.1.0
+Requires:	kolab >= %{kolab_version}
 Requires:	locales-de
 Requires:	locales-es
 Requires:	locales-fr
@@ -38,37 +39,27 @@ Requires:	php-gettext >= 5.2.2
 Requires:	php-imap >= 5.2.2
 Requires:	php-ldap >= 5.2.2
 Requires:	php-pear-Net_Sieve
-Requires:	php-smarty >= 2.6.3
+Requires:	php-smarty >= 2.6.20
 Requires:	php-xml >= 5.2.2
 BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+
+
+
 
 %description
 Web based administration interface for The Kolab Groupware Server.
 
 %prep
 
-%setup -q
+%setup -q -n %{name}-%{version}
 %patch0 -p0
-%patch1 -p0
-
-
-# cleanup
-for i in `find . -type d -name CVS`  `find . -type d -name .svn` `find . -type f -name .cvs\*` `find . -type f -name .#\*`; do
-    if [ -e "$i" ]; then rm -rf $i; fi >&/dev/null
-done
-
-# strip away annoying ^M
-find . -type f|xargs file|grep 'CRLF'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
-find . -type f|xargs file|grep 'text'|cut -d: -f1|xargs perl -p -i -e 's/\r//'
-
 
 # the main config file
 find -type f | xargs perl -pi -e "s|\@kolab_php_module_prefix\@admin/include/config\.php|%{_sysconfdir}/kolab/webadmin/config\.php|g"
 find -type f | xargs perl -pi -e "s|require_once\(\'config\.php\'\)\;|require_once\(\'%{_sysconfdir}/kolab/webadmin/config\.php\'\)\;|g"
 
 # the Smarty config file and other related stuff...
-find -type f | xargs perl -pi -e "s|require_once\(\'\@kolab_php_smarty_prefix\@/Smarty\.class\.php\'\)\;|require_once\(\'%{_datadir}/smarty/Smarty\.class\.php\'\)\;|g" 
+find -type f | xargs perl -pi -e "s|require_once\(\'\@kolab_php_smarty_prefix\@/Smarty\.class\.php\'\)\;|require_once\(\'%{_datadir}/php/smarty/Smarty\.class\.php\'\)\;|g" 
 find -type f | xargs perl -pi -e "s|require_once\(\'mysmarty\.php\'\)\;|require_once\(\'%{_sysconfdir}/kolab/webadmin/mysmarty\.php\'\)\;|g"
 find -type f | xargs perl -pi -e "s|require_once\(\'\@kolab_php_module_prefix\@admin/include/mysmarty\.php\'\)\;|require_once\(\'%{_sysconfdir}/kolab/webadmin/mysmarty\.php\'\)\;|g"
 
@@ -82,42 +73,36 @@ find -type f | xargs perl -pi -e "s|%{kolab_webroot}/admin/include/mysmarty\.php
 find -type f | xargs perl -pi -e "s|require_once\(\'locale\.php\'\)\;|require_once\(\'%{kolab_webroot}/admin/include/locale\.php\'\)\;|g"
 find -type f | xargs perl -pi -e "s|require_once\(\'mysmarty\.php\'\)|require_once\(\'%{_sysconfdir}/kolab/webadmin/mysmarty\.php\'\)|g"
 
-# fix one /kolab bork66y thing
-find . -type f|xargs perl -p -i -e "s|/kolab/bin/perl|%{_bindir}/perl|g"
 
-# fix version
-perl -pi -e "s|\@kolab_version\@|%{version}|g" www/admin/kolab/versions.php.in
-
-# these won't be generated from the *.in files if they exist
-rm -f php/admin/templates/page.tpl
-rm -f php/admin/templates/versions.tpl
 
 %build
-aclocal; autoconf; automake
 
-%configure2_5x \
-    --with-dist=mandriva
+touch README
+autoreconf -fi
 
-%make
+%configure  \
+	--with-dist=mandriva \
+	--with-openpkg=no
+
+%{__make}
+
+
 
 %install
-rm -rf %{buildroot}
+%__sed -i "s/@kolab_version@/%{version} \[%{_pversion}\]/" www/admin/kolab/versions.php
 
 %makeinstall_std
 
-install -d %{buildroot}%{_localstatedir}/lib/kolab/webadmin/templates_c
 install -d %{buildroot}%{_sysconfdir}/kolab/webadmin/smarty
 
-perl -pi -e "s|^\\\$topdir = .*|\\\$topdir = \'/kolab/admin\'\;|g" %{buildroot}%{kolab_webroot}/admin/include/config.php
-perl -pi -e "s|^\\\$php_dir = .*|\\\$php_dir = \'%{kolab_webroot}/admin\'\;|g" %{buildroot}%{kolab_webroot}/admin/include/config.php
-perl -pi -e "s|^\\\$locale_dir = .*|\\\$locale_dir = \'%{kolab_webroot}/admin/locale/\'\;|g" %{buildroot}%{kolab_webroot}/admin/include/config.php
 
-mv %{buildroot}%{kolab_webroot}/admin/include/config.php %{buildroot}%{_sysconfdir}/kolab/webadmin/
-mv %{buildroot}%{kolab_webroot}/admin/include/mysmarty.php %{buildroot}%{_sysconfdir}/kolab/webadmin/
+
+mv %{buildroot}%{kolab_statedir}/admin/include/config.php %{buildroot}%{_sysconfdir}/kolab/webadmin/config.php
+mv %{buildroot}%{kolab_statedir}/admin/include/mysmarty.php %{buildroot}%{_sysconfdir}/kolab/webadmin/mysmarty.php
 
 install -d %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/
 cat > %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{name}.conf <<EOF
-php_value include_path '.:%{_datadir}/pear:%{kolab_webroot}:%{_datadir}/php/smarty:%{_datadir}/kolab/php:%{_datadir}/kolab/php/horde'
+php_value include_path '.:%{_datadir}/pear:%{kolab_webroot}:%{_datadir}/smarty:%{_datadir}/kolab/php:%{_datadir}/kolab/php/horde'
 EOF
 
 # cleanup
@@ -146,33 +131,32 @@ rm -rf %{buildroot}
 %attr(0640,apache,apache) %config(noreplace) %{_sysconfdir}/kolab/webadmin/mysmarty.php
 %dir %attr(0755,root,root) %{_sysconfdir}/kolab/webadmin/smarty
 %dir %attr(0755,apache,apache) %{_localstatedir}/lib/kolab/webadmin/templates_c
-%dir %attr(0755,root,root) %{kolab_webroot}/admin
+%dir %attr(0755,root,root) %{kolab_statedir}/admin
+%dir %attr(0755,root,root) %{kolab_statedir}/admin/include
+%dir %attr(0755,root,root) %{kolab_statedir}/admin/templates
 %dir %attr(0755,root,root) %{kolab_webroot}/admin/addressbook
 %dir %attr(0755,root,root) %{kolab_webroot}/admin/administrator
 %dir %attr(0755,root,root) %{kolab_webroot}/admin/distributionlist
-%dir %attr(0755,root,root) %{kolab_webroot}/admin/include
-%dir %attr(0755,root,root) %{kolab_webroot}/admin/kolab
 %dir %attr(0755,root,root) %{kolab_webroot}/admin/maintainer
 %dir %attr(0755,root,root) %{kolab_webroot}/admin/pics
-%dir %attr(0755,root,root) %{kolab_webroot}/admin/service
+%dir %attr(0755,root,root) %{kolab_webroot}/admin/settings
 %dir %attr(0755,root,root) %{kolab_webroot}/admin/sharedfolder
-%dir %attr(0755,root,root) %{kolab_webroot}/admin/templates
 %dir %attr(0755,root,root) %{kolab_webroot}/admin/user
-%dir %attr(0755,root,root) %{kolab_webroot}/admin/domainmaintainer
-%{kolab_webroot}/admin/locale
+%dir %attr(0755,root,root) %{kolab_webroot}/
+%{kolab_statedir}/admin/locale
 %attr(0644,root,root) %{kolab_webroot}/admin/addressbook/*.php
 %attr(0644,root,root) %{kolab_webroot}/admin/administrator/*.php
 %attr(0644,root,root) %{kolab_webroot}/admin/*.css
 %attr(0644,root,root) %{kolab_webroot}/admin/distributionlist/*.php
-%attr(0644,root,root) %{kolab_webroot}/admin/include/*.php
 %attr(0644,root,root) %{kolab_webroot}/admin/kolab/*.php
+%attr(0644,root,root) %{kolab_statedir}/admin/include/*.php
 %attr(0644,root,root) %{kolab_webroot}/admin/maintainer/*.php
 %attr(0644,root,root) %{kolab_webroot}/admin/*.php
 %attr(0644,root,root) %{kolab_webroot}/admin/pics/*.png
-%attr(0644,root,root) %{kolab_webroot}/admin/pics/*.jpg
-%attr(0644,root,root) %{kolab_webroot}/admin/service/*.php
+%attr(0644,root,root) %{kolab_webroot}/*.png
+%attr(0644,root,root) %{kolab_webroot}/admin/settings/*.php
 %attr(0644,root,root) %{kolab_webroot}/admin/sharedfolder/*.php
-%attr(0644,root,root) %{kolab_webroot}/admin/templates/*.tpl
+%attr(0644,root,root) %{kolab_statedir}/admin/templates/*.tpl
 %attr(0644,root,root) %{kolab_webroot}/admin/user/*.php
 %attr(0644,root,root) %{kolab_webroot}/admin/domainmaintainer/*.php
-%attr(0644,root,root) %{kolab_webroot}/*.ico
+
