@@ -3,6 +3,8 @@
 %define kolab_webroot 		/var/www/html/kolab
 %define kolab_statedir		/var/www/html/kolab
 
+%define		subrel 1
+
 Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
 License:	GPL
@@ -14,6 +16,7 @@ Source0:	%{name}-%{version}.tar.gz
 Source1:	mandriva
 Source2:	bootstrap
 Patch0:		mandriva.diff
+Patch1:		user.php.in.diff
 Requires(post):	rpm-helper
 Requires(preun): rpm-helper
 Requires(pre):	rpm-helper
@@ -53,6 +56,7 @@ Web based administration interface for The Kolab Groupware Server.
 
 %setup -q -n %{name}-%{version}
 %patch0 -p0
+%patch1 -p0
 
 # the main config file
 find -type f | xargs perl -pi -e "s|\@kolab_php_module_prefix\@admin/include/config\.php|%{_sysconfdir}/kolab/webadmin/config\.php|g"
