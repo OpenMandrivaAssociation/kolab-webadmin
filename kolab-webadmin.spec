@@ -8,7 +8,7 @@ Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
 License:	GPL
 Version:	%{kolab_version}
-Release:	%mkrel 2
+Release:	%mkrel 4
 Group:		System/Servers
 URL:		http://kolab.org/cgi-bin/viewcvs-kolab.cgi/server/kolab-webadmin/
 Source0:	%{name}-%{version}.tar.gz
@@ -40,8 +40,8 @@ Requires:	php-gettext >= 5.2.2
 Requires:	php-imap >= 5.2.2
 Requires:	php-ldap >= 5.2.2
 Requires:	php-pear-Net_Sieve
-Requires:	php-smarty >= 2.6.20
 Requires:	php-xml >= 5.2.2
+Requires:	php-smarty2
 BuildArch:	noarch
 
 
