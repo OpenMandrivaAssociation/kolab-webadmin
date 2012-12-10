@@ -1,0 +1,4 @@
+cp -pr /dist_conf .
+touch README
+autoreconf -f -i
+

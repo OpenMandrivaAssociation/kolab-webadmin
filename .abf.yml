@@ -1,5 +1,2 @@
 sources:
-  "bootstrap:"	f451599d39a00515fbfa2fff01651b0185a3fbf9
-  "kolab-webadmin-2.2.3.tar.gz:"	437a468f56c467d224b06ca2b276236d337e133b
-  "kolab-webadmin-2.2.4.tar.gz:"	d81f50d1be74b3798031991f807751b48b823646
-  "mandriva:"	cd28f51ac02f51009aaca9957a02802fcc52a187
+  "kolab-webadmin-2.2.4.tar.gz": d81f50d1be74b3798031991f807751b48b823646
