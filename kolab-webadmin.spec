@@ -1,5 +1,5 @@
 %define kolab_version		2.2.4
-%define _requires_exceptions 	pear(/usr/share/php/smarty/Smarty.class.php)\\|pear(/etc/kolab/session_vars.php)
+%define __noautoreq 	'pear\\(/usr/share/php/smarty/Smarty.class.php\\)|pear\\(/etc/kolab/session_vars.php\\)'
 %define kolab_webroot 		/var/www/html/kolab
 %define kolab_statedir		/var/www/html/kolab
 
@@ -8,7 +8,7 @@ Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
 License:	GPL
 Version:	%{kolab_version}
-Release:	%mkrel 6
+Release:	7
 Group:		System/Servers
 URL:		http://kolab.org/cgi-bin/viewcvs-kolab.cgi/server/kolab-webadmin/
 Source0:	%{name}-%{version}.tar.gz
@@ -124,10 +124,8 @@ if [ "$1" = "0" ]; then
 fi
 
 %clean
-rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog INSTALL NEWS
 %config(noreplace) %{_sysconfdir}/httpd/conf/webapps.d/%{name}.conf
 %attr(0640,apache,apache) %config(noreplace) %{_sysconfdir}/kolab/webadmin/config.php
