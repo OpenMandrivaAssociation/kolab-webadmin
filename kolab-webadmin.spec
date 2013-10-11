@@ -29,6 +29,7 @@ Requires:	apache-mod_ldap >= 2.2.4
 Requires:	apache-mod_php
 Requires:	apache-mod_ssl >= 2.2.4
 Requires:	apache-mpm >= 2.2.4
+Requires:	apache-mod_socache_shmcb
 Requires:	kolab >= %{kolab_version}
 Requires:	locales-de
 Requires:	locales-es
