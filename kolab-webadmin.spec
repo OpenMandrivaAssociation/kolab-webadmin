@@ -8,7 +8,7 @@ Summary:	Kolab Groupware Server Web Administration Interface
 Name:		kolab-webadmin
 License:	GPL
 Version:	%{kolab_version}
-Release:	7
+Release:	8
 Group:		System/Servers
 URL:		http://kolab.org/cgi-bin/viewcvs-kolab.cgi/server/kolab-webadmin/
 Source0:	%{name}-%{version}.tar.gz
