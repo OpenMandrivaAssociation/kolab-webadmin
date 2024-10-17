@@ -10,7 +10,7 @@ License:	GPL
 Version:	%{kolab_version}
 Release:	8
 Group:		System/Servers
-URL:		http://kolab.org/cgi-bin/viewcvs-kolab.cgi/server/kolab-webadmin/
+URL:		https://kolab.org/cgi-bin/viewcvs-kolab.cgi/server/kolab-webadmin/
 Source0:	%{name}-%{version}.tar.gz
 Source1:	mandriva
 Source2:	bootstrap
